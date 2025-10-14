@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  job-agent:
+    build: .
+    container_name: hh-job-agent
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    restart: unless-stopped
+
+    build: .
+    container_name: hh-job-agent-cron
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./cron/weekly_job:/etc/cron.d/weekly-job
+    env_file:
+      - .env
+    command: cron -f
+    restart: unless-stopped
