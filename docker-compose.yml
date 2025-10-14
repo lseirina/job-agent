@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-
+  job-agent-cron:  
     build: .
     container_name: hh-job-agent-cron
     volumes:
