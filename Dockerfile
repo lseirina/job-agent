@@ -11,10 +11,8 @@ RUN apt-get update && apt-get install -y \
 
 COPY requirements.txt tmp/requirements.txt
 RUN pip install no-cache-dir -r requirements.txt
-COPY src ./src
-COPY data ./data
-COPY scripts ./scripts
+COPY . .
 
 RUN mkdir -p /app/logs
 
-CMD ["python", "src/main.py"]
+CMD ["python", "-m", "app.main.py"]
