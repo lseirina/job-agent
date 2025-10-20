@@ -1,24 +1,71 @@
 version: '3.8'
 
 services:
-  job-agent:
+  app:
     build: .
-    container_name: hh-job-agent
+    container_name: hh-agent
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
       - ./app:/app/app
-    env_file:
-      - .env
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/hh_agent
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
     restart: unless-stopped
-  job-agent-cron:  
+    
+  db:
+    image: postgres:13
+    container_name: hh_agent_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hh_agent
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+      
+    redis:
+      image: redis:7-alpine
+      container_name: hh_agent_redis
+      ports:
+        - "6379:6379"
+        
+  celery:
     build: .
-    container_name: hh-job-agent-cron
+    container_name: hh_agent_celery
+    command: celery -A app.services.celery_worker worker --loglevel=info
+    volumes:
+       - ./data:/app/data
+       - ./logs:/app/logs
+    invironment:
+      - DATABASE_URL=postgresql://user:password@db:5432/hh_agent
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+     - db
+     - redis
+    restart: unless_stopped
+    
+  celery_beat:
+    build: .
+    container_name: hh_agent_celery_beat
+    command: celery -A app.services.celery_worker beat --loglevel=info
     volumes:
       - ./data:/app/data
-      - ./logs:/app/logs
-      - ./cron/weekly_job:/etc/cron.d/weekly-job
-    env_file:
-      - .env
-    command: cron -f
-    restart: unless-stopped
+      - ./log:/app/log
+     invironment:
+      - DATABASE_URL=postgresql://user:password@db:5432/hh_agent
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+     - db
+     - redis
+    restart: unless_stopped
+  
+volumes:
+  postgres_data:
+    
+    
+      
