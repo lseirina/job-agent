@@ -9,7 +9,7 @@ class Settings:
     DATABASE_URL = os.getenv("DATABSE_URL", "postgresql://user:password@db:5432/hh_agent")
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
     
-    SMTP_SERVER = os.getenv("SMTP_SERVER", "smpt.gmail.com")
+    SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
     SMTP_PORT = os.getenv("SMTP_PORT", "587")
     EMAIL_USER = os.getenv("EMAIL_USER")
     EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
