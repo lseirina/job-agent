@@ -23,3 +23,20 @@ class ResumParser:
             nltk.download('stopwords')
             
         self.stop_words = set(stopwords.words('russian') + stopwords.words('english'))
+        
+    def parse_resume(self):
+        with open(self.resum_part, 'r', encoding='utf-8') as file:
+            content = file.read()
+            
+        skills_section = self._extract_section(content, ['навыки', 'skills', 'технологии'])
+        self.skills = self._extract_skills(skills_section)    
+        experience_section = self._extract_section(content, ['опыт', 'experience'])
+        self.experience = self._extract_experience(experience_section) 
+        
+        self.key_words = self._extract_keywords(content)
+        
+        return { 'skills' : self.skills,
+                'experience': self.experience,
+                'keywords': self.keywords,
+                'raw_text': content
+            }      
