@@ -39,4 +39,13 @@ class ResumParser:
                 'experience': self.experience,
                 'keywords': self.keywords,
                 'raw_text': content
-            }      
+            }
+        
+    def _extract_section(self, content, section_names):
+        content_lower = content.lower()
+        for name in section_names:
+            pattern = rf'{name}[\s\S]*?(?=\n\s*\n|$)'
+            match = re.search(pattern, content_lower, re.IGNORECASE)
+            if match:
+                return match.group()
+        return ""
