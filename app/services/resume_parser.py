@@ -70,6 +70,7 @@ class ResumParser:
         return found_skills
     
     def _extract_experience(self, text):
+        """Extract time experience"""
         experience_patterns = [
             r'(/d+)/s*(года[а]?|лет|г.)',
             r'(/d+)/s*месяц[а-я]*',
@@ -84,6 +85,17 @@ class ResumParser:
                 else:
                     found_experience.append(match)
                     
-        return found_experience                         
+        return found_experience
+    
+    def _extract_keywords(self, text):
+        """Extract most frequent words."""
+        words = word_tokenize(text.lower())
+        words = [word for word in words if word.isalpha() and word not in self.stop_words()]
+        
+        from collections import Counter
+        freq_words = Counter(words)
+        return [word for word, count in freq_words.most_common(10)]
+        
+                               
     
               
