@@ -66,6 +66,22 @@ class HHparser:
             'employment_type': vacancy_data.get('employment', {}).get('name', '')
         }
     
+    def _extract_skills_from_description(self, description):
+        """Extract skills and turn into normal form."""
+        common_skills = [
+        'python', 'sql', 'postgresql', 'git', 'linux', 'docker', 
+        'docker-compose', 'django', 'flask', 'fastapi', 'aws', 'nginx', 'rest', 
+        'api', 'http', 'json', 'alembic', 'sqlalchemy', 'pytest', 'gitlab', 
+        'pep8', 'solid', 'backend', 'algorithms', 'design patterns', 'database',
+        'web applications', 'asynchronous programming'
+    ]
+        found_skills = []
+        
+        for skill in common_skills:
+            if skill in description.lower():
+                found_skills.append(skill)
+                
+        return ', '.join(found_skills)
             
             
 
