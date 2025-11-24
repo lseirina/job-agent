@@ -53,6 +53,19 @@ class HHparser:
         except requests.RequestException as e:
             logger.error(f"Error fetching vacancy {vacancy_id}: {e}")
             return None
+        
+    def parse_vacancy_data(seelf, vacancy_data):
+        """Parse vacancy data into normal format."""
+        return {
+            'hh_id': str(vacancy_data['id']),
+            'name': vacancy_data.get('name', ''),
+            'url': vacancy_data.get('alternate_url', '')
+            'description': self._clean_description(vacancy_data.get('description', ''))
+            'skills': self._extract_skills_from_description(vacancy_data('description', ''))
+            'experience': vacancy_data.get('experience', {}).get('name', ''),
+            'employment_type': vacancy_data.get('employment', {}).get('name', '')
+        }
+    
             
             
 
