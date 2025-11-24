@@ -17,12 +17,11 @@ class HHparser:
             {'User-Agent': 'HH-Agent/1.0 (lseirina87@gmail.com)'}
         )
         
-    def search_vacancies(self, skills, experience=None, area = 1):
+    def search_vacancies(self, skills, experience=None):
         """Finding vacancies by keywords and skills."""
         query = " OR ".join(skills + keywords)
         params = {
             'text': query,
-            'area': area,
             'per_page': 50,
             'page': 0
         }
@@ -32,7 +31,7 @@ class HHparser:
         vacancies = []
         
         try:
-            response = self.session.get(f"{sel.base_url}/vacancies", params=params)
+            response = self.session.get(f"{self.base_url}/vacancies", params=params)
             response.raise_for_status()
             data = response.json()
             vacancies = data.get('items', [])
@@ -43,5 +42,17 @@ class HHparser:
             logger.error(f"Error fetching vacancies: {e}")
             
         return vacancies
+    
+    def get_vacancy_detail(self, vacancy_id):
+        """Return datails of vacancy."""
+        try:
+            time.sleep(0.1)
+            response = self.session.get(f"{self.base_url}/vacancies/{vacancy_id}")
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            logger.error(f"Error fetching vacancy {vacancy_id}: {e}")
+            return None
+            
             
 
